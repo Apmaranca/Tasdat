@@ -3,19 +3,19 @@ import numpy as np
 
 # Configuración inicial
 labels = [
-    'Property Tax', 
-    'Commerce Tax', 
-    'Income Tax', 
-    'Payroll Tax', 
-    'Special Policy'
+    'Special\nPolicy',   # Purple
+    'Commerce\nTax',     # Blue
+    'Property\nTax',     # Green
+    'Payroll\nTax',      # Yellow
+    'Income\nTax'        # Orange
 ]
 
 colors = [
-    'green',     # Property Tax
-    'blue',      # Commerce Tax
-    'orange',    # Income Tax
-    'yellow',    # Payroll Tax
-    'purple'     # Special Policy
+    'purple',   # Special Policy
+    'blue',     # Commerce Tax
+    'green',    # Property Tax
+    'yellow',   # Payroll Tax
+    'orange'    # Income Tax
 ]
 
 # Número total de pétalos
@@ -24,47 +24,44 @@ n_petals = 5
 # Ángulo total del círculo (en radianes)
 full_circle = 2 * np.pi
 
-# Ángulo que cubre cada pétalo
-petal_angle = full_circle / n_petals
-
-# Espacio (gap) entre pétalos (en radianes), por ejemplo 5 grados convertidos a radianes
-gap = np.deg2rad(5)
-
-# Ángulo efectivo para cada pétalo (descontando el gap)
-effective_petal_angle = petal_angle - gap
+# Ángulo que cubre cada pétalo (con espacio entre ellos)
+gap = np.deg2rad(5)  # Espacio entre pétalos (opcional)
+petal_angle = (full_circle / n_petals) - gap
 
 # Crear figura y eje polar
 fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(polar=True))
 
-# Radio interior y exterior (para simular pétalos tipo "anillo")
-inner_radius = 0.5
+# Radio interior y exterior (define grosor de los pétalos)
+inner_radius = 0.4
 outer_radius = 1.0
 
 # Dibujar cada pétalo
 for i in range(n_petals):
-    start_angle = i * petal_angle  # Ángulo de inicio para cada pétalo
-    end_angle = start_angle + effective_petal_angle  # Ángulo de fin
-    
-    # Definir los ángulos y radios
+    start_angle = i * (full_circle / n_petals)  # inicio absoluto de cada sector
+    end_angle = start_angle + petal_angle       # final absoluto
+
+    # Definir los puntos del sector (dos líneas radiales y dos arcos)
     theta = np.linspace(start_angle, end_angle, 100)
     r_inner = np.full_like(theta, inner_radius)
     r_outer = np.full_like(theta, outer_radius)
-    
-    # Dibujar la franja (pétalo)
+
+    # Dibujar pétalo
     ax.fill_between(theta, r_inner, r_outer, color=colors[i], edgecolor='k', linewidth=1)
 
-    # Posicionar las etiquetas (un poco hacia afuera del borde)
+    # Posicionar etiqueta en el centro de cada pétalo
     label_angle = (start_angle + end_angle) / 2
-    label_radius = outer_radius + 0.1
-    ax.text(label_angle, label_radius, labels[i], ha='center', va='center', fontsize=10, fontweight='bold')
+    label_radius = (inner_radius + outer_radius) / 2
+    ax.text(label_angle, label_radius, labels[i], ha='center', va='center', fontsize=10, fontweight='bold', color='white')
 
-# Ajustes finales del gráfico
-ax.set_ylim(0, outer_radius + 0.2)
-ax.set_yticks([])  # Oculta círculos concéntricos
-ax.set_xticks([])  # Oculta marcas angulares
+# Eliminar círculos concéntricos y marcas exteriores
+ax.set_ylim(0, outer_radius)
+ax.set_yticks([])
+ax.set_xticks([])
 
-# Título
-plt.title("Tax Distribution Wheel", va='bottom', fontsize=14)
+# Añadir el texto central
+plt.text(0, 0, "Tax System\nQuality Assessment", ha='center', va='center', fontsize=14, fontweight='bold', color='black')
 
-# Mostrar
+# Ajustes finales
+plt.title("", fontsize=14)  # Sin título superior
 plt.show()
+
